@@ -4,13 +4,12 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
-public class GameLoop implements Runnable 
+public class GameLoop
 {
 	private Window window;
 	public int width, height;
 	
-	private Thread thread;
-	private Boolean running = false;
+	private Boolean running = true;
 	
 	private BufferStrategy bufferStrat;
 	private Graphics draw;
@@ -23,8 +22,8 @@ public class GameLoop implements Runnable
 	
 	private void init()
 	{
-		Window window = new Window();
-		test = ImageLoader.loadImage("/new/1.jpg");
+		window = new Window();
+		SpriteCrop.init();
 	}
 
 	private void tick()
@@ -40,9 +39,11 @@ public class GameLoop implements Runnable
 			window.getCanvas().createBufferStrategy(3);
 			return;
 		}
+		
 		draw = bufferStrat.getDrawGraphics();
 		draw.clearRect(0, 0, width, height);
-		draw.drawImage(test, 20, 20, null);   //null = image observer not needed
+		draw.drawImage(SpriteCrop.one, 0, 0, null);   //null = image observer not needed
+		draw.drawImage(SpriteCrop.two, 200, 150, null);
 		bufferStrat.show();
 		draw.dispose();
 	}
@@ -57,37 +58,6 @@ public class GameLoop implements Runnable
 			tick();
 			render();
 		}
-		
-		stop();
-	}
-	
-	public synchronized void start()   //1. starts run
-	{
-		if(running)
-		{
-			return;
-		}
-		else
-		{
-			running = true;
-			thread = new Thread(this);   //puts GameLoop on the thread
-			thread.start();              //calls run
-		}
-	}
-	
-	public synchronized void stop()
-	{
-		if(running == false)
-		{
-			try 
-			{
-				thread.join();
-			}catch (InterruptedException e) 
-			{
-				e.printStackTrace();
-			}
-		}
-		
 	}
 	
 }

@@ -4,13 +4,14 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import states.GameState;
+import states.Menu;
 import states.State;
 
 public class GameLoop
 {
-	public int i = 0;
 	private Window window;
-	public int width, height;
+	private int width = 400;
+	private int height = 300;
 	
 	private Boolean running = true;
 	
@@ -18,7 +19,9 @@ public class GameLoop
 	private Graphics draw;
 	public BufferedImage test;
 	
+	//States
 	private State gameState;
+	private State menuState;
 	
 	public GameLoop() //constructor
 	{	
@@ -27,27 +30,28 @@ public class GameLoop
 	
 	private void init()
 	{
-		window = new Window();
+		setWindow(new Window(width, height));
 		SpriteCrop.init();
 		
-		gameState = new GameState();
+		gameState = new GameState(this);
+		menuState = new Menu(this);
 		State.setState(gameState);
 	}
 
-	private void tick()
+	private void update()
 	{
 		if(State.getState() != null)
 		{
-			State.getState().tick();
+			State.getState().update();
 		}
 	}
 	
 	private void render()
 	{
-		bufferStrat = window.getCanvas().getBufferStrategy();
+		bufferStrat = getWindow().getCanvas().getBufferStrategy();
 		if(bufferStrat == null)
 		{
-			window.getCanvas().createBufferStrategy(3);
+			getWindow().getCanvas().createBufferStrategy(3);
 			return;
 		}
 		
@@ -59,15 +63,6 @@ public class GameLoop
 			State.getState().render(draw);
 		}
 		
-		if(i == 0)
-		{
-		draw.drawImage(SpriteCrop.one, 0, 0, null);   //null = image observer not needed
-		i = 1;
-		}
-		else {
-		draw.drawImage(SpriteCrop.two, 0, 0, null);
-		i = 0;
-		}
 		bufferStrat.show();
 		draw.dispose();
 	}
@@ -94,7 +89,7 @@ public class GameLoop
 			
 			if(delta >= 1)
 			{
-				tick();
+				update();
 				render();
 				frames++;     //for fps counter
 				delta--;
@@ -108,5 +103,12 @@ public class GameLoop
 			}
 		}
 	}
-	
+
+	public Window getWindow() {
+		return window;
+	}
+
+	public void setWindow(Window window) {
+		this.window = window;
+	}
 }

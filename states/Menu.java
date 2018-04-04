@@ -2,14 +2,16 @@ package states;
 
 import java.awt.Graphics;
 
-public class Menu 
+import game_engine.GameLoop;
+
+public class Menu extends State
 {
-	public Menu()
+	public Menu(GameLoop game)
 	{
-		
+		super(game);
 	}
 	
-	public void tick()
+	public void update()
 	{
 		
 	}

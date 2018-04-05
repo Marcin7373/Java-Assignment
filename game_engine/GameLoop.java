@@ -10,8 +10,7 @@ import states.State;
 public class GameLoop
 {
 	private Window window;
-	private int width = 400;
-	private int height = 300;
+	private static final int width = 400, height = 300;
 	
 	private Boolean running = true;
 	
@@ -80,7 +79,7 @@ public class GameLoop
 		long timer = 0;                 //time until 1 sec /for fps
 		long frames = 0;                //                 /counter
 		
-		while(running == true)
+		while(true)
 		{
 			now = System.nanoTime();
 			delta += (now - lastTime) / timePerFrame;
@@ -110,5 +109,13 @@ public class GameLoop
 
 	public void setWindow(Window window) {
 		this.window = window;
+	}
+	
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
 	}
 }

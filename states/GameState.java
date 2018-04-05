@@ -4,28 +4,34 @@ import java.awt.Graphics;
 
 import entities.Player;
 import game_engine.GameLoop;
+import game_engine.Map;
 import game_engine.SpriteCrop;
 
 public class GameState extends State
 {
 	public int i = 0;
 	private Player player;
+	private Map map;
 	
 	public GameState(GameLoop game)
 	{
 		super(game);
-		setPlayer(new Player(game, 100, 100));
+		player = new Player(game, 100, 100);
 		game.getWindow().getFrame().addKeyListener(player);
+		map = new Map(game);
+		
 	}
 
 	public void update()
 	{
-		getPlayer().update();
+		player.update();
+		map.update();
 	}
 	
 	public void render(Graphics draw)
 	{
-		getPlayer().render(draw);
+		player.render(draw);
+		map.render(draw);
 		
 		if(i == 0)
 		{

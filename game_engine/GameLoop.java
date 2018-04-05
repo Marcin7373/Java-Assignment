@@ -10,7 +10,7 @@ import states.State;
 public class GameLoop
 {
 	private Window window;
-	private static final int width = 400, height = 300;
+	private static final int width = 1200, height = 600;
 	
 	private Boolean running = true;
 	
@@ -96,7 +96,7 @@ public class GameLoop
 			
 			if(timer >= 1000000000)   //fps counter
 			{
-				System.out.println("FPS: "+frames);
+				//System.out.println("FPS: "+frames);
 				frames = 0;
 				timer = 0;
 			}

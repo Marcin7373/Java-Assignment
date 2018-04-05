@@ -9,39 +9,35 @@ import game_engine.SpriteCrop;
 
 public class GameState extends State
 {
-	public int i = 0;
+	private static float scroll = 3, speedUp = 1.01f;//scroll = 3
 	private Player player;
 	private Map map;
 	
 	public GameState(GameLoop game)
 	{
 		super(game);
-		player = new Player(game, 100, 100);
-		game.getWindow().getFrame().addKeyListener(player);
 		map = new Map(game);
+		player = new Player(map, 100, 100, 50, 50);
+		game.getWindow().getFrame().addKeyListener(player);
 		
 	}
 
 	public void update()
 	{
+		if(scroll > 200 && scroll < 840)
+		{
+			speedUp -= 0.0000343f;
+		}
+		System.out.println(speedUp);
+		scroll *= speedUp;
 		player.update();
-		map.update();
+		map.update(scroll);
 	}
 	
 	public void render(Graphics draw)
 	{
 		player.render(draw);
 		map.render(draw);
-		
-		if(i == 0)
-		{
-		draw.drawImage(SpriteCrop.one, 0, 0, null);   //null = image observer not needed
-		i = 1;
-		}
-		else {
-		draw.drawImage(SpriteCrop.two, 0, 0, null);
-		i = 0;
-		}
 	}
 
 	public Player getPlayer() {

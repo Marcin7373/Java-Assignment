@@ -4,13 +4,14 @@ import java.awt.Graphics;
 import java.util.Random;
 
 import entities.Block;
+import entities.Player;
 
 public class Map 
 {
 	private GameLoop game;
 	private int width, height;
 	private final int tPats = 4;
-	private int bWidth, bHeight; //block width
+	private final int bWidth = 100, bHeight = 5; //block width
 	private static int scroll, loop = 0;
 	private Block block;
 	private int[] genMap = new int[tPats];
@@ -18,15 +19,17 @@ public class Map
 	private int[][] pattern2 = new int[2][4];
 	private int[][] pattern3 = new int[2][4];
 	private int[][] pattern4 = new int[2][4];
+	private Player player;
 	Random rand = new Random();
+	private float speedUp;
 	
 	public Map(GameLoop game)
 	{
 		this.game = game;
 		width = game.getWidth();
 		height = game.getHeight();
-		bWidth = 100;
-		bHeight = 20;
+		player = new Player(500, 100, 50, 50);
+		game.getWindow().getFrame().addKeyListener(player);
 		block = new Block(0,0, bWidth, bHeight);
 		
 		initPatterns();
@@ -41,9 +44,12 @@ public class Map
 		genMap[tPats-1] = rand.nextInt(tPats)+1;
 	}
 	
-	public void update(float scroll)
+	public void update(float scroll, float speedUp)
 	{
 		this.scroll = (int)-scroll;
+		player.update();
+		this.speedUp = speedUp;
+		//player.Move(speedUp);
 	}
 	
 	public void render(Graphics draw)
@@ -62,6 +68,7 @@ public class Map
 			}
 			
 			xEnd = xEnd * patID + scroll + loop;
+			//System.out.println("M "+scroll);
 			
 			if(genMap[patID] == 1)
 			{
@@ -69,7 +76,9 @@ public class Map
 				{
 					block.setX(pattern1[0][bCount] + xEnd);
 					block.setY(pattern1[1][bCount]);
+					player.collision(pattern1[0][bCount] + xEnd, pattern1[1][bCount]);
 					block.render(draw);
+					//System.out.println("M "+xEnd);
 				}
 			}
 			else if(genMap[patID] == 2)
@@ -78,6 +87,7 @@ public class Map
 				{
 					block.setX(pattern2[0][bCount] + xEnd);
 					block.setY(pattern2[1][bCount]);
+					player.collision(pattern2[0][bCount] + xEnd, pattern2[1][bCount]);
 					block.render(draw);
 				}
 			}
@@ -87,6 +97,7 @@ public class Map
 				{
 					block.setX(pattern3[0][bCount] + xEnd);
 					block.setY(pattern3[1][bCount]);
+					player.collision(pattern3[0][bCount] + xEnd, pattern3[1][bCount]);
 					block.render(draw);
 				}
 			}
@@ -96,10 +107,13 @@ public class Map
 				{
 					block.setX(pattern4[0][bCount] + xEnd);
 					block.setY(pattern4[1][bCount]);
+					player.collision(pattern4[0][bCount] + xEnd, pattern4[1][bCount]);
 					block.render(draw);
 				}
 			}
 		}
+		player.Move(scroll);
+		player.render(draw);
 	}
 	
 	public void initPatterns()
@@ -154,16 +168,8 @@ public class Map
 		return bWidth;
 	}
 
-	public void setbWidth(int bWidth) {
-		this.bWidth = bWidth;
-	}
-
 	public int getbHeight() {
 		return bHeight;
-	}
-
-	public void setbHeight(int bHeight) {
-		this.bHeight = bHeight;
 	}
 
 	public static int getScroll() {
@@ -180,5 +186,13 @@ public class Map
 
 	public void setBlock(Block block) {
 		this.block = block;
+	}
+	
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 }

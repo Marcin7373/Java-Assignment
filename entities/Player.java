@@ -10,66 +10,77 @@ import game_engine.SpriteCrop;
 public class Player extends Entity implements KeyListener
 {
 	private boolean left, right, up, down;
-	private Map map;
-	
-	public Player(Map map, float x, float y, int width, int height) 
+	private int xMove, yMove;
+	private boolean canMoveX = true, canMoveY = true;
+	private int blockW = 100;
+	private int offset = -3;
+	public Player(float x, float y, int width, int height) 
 	{
 		super(x, y, width, height);
-		this.map = map;
 		this.width = width;
 		this.height = height;
 		
 		hitBox.x = (int)x;  //set up size of hitbox
 		hitBox.y = (int)y;
-		hitBox.width = width-25;
+		hitBox.width = width;
 		hitBox.height = height;
 	}
 
-	public void xMove()
-	{
-		int move = 0;
-		if(left == true) move = -5;
-		if(right == true) move = +5;
-		
-		
-		if(move > 0)
+	public void Move(float scroll)
+	{	
+		if(canMoveX == true)
 		{
-			int tx = (int)(x + move + hitBox.x + hitBox.width) / map.getbWidth();
-			
+			x += xMove;
 		}
-		else if(move < 0)
+		offset -= scroll;
+		x -= offset;
+		offset = (int)scroll;
+		hitBox.x = (int)x;
+		xMove = 0;
+		canMoveX = true;
+		
+		if(canMoveY == true)
 		{
-			x += move;
-			hitBox.x = (int)x;
+			y += yMove;
 		}
-	}
-	
-	public void yMove()
-	{
-		int move = 0;
-		if(up == true) move = -5;
-		if(down == true) move = 5;
-		y += move;
 		hitBox.y = (int)y;
+		yMove = 0;
+		canMoveY = true;
 	}
 	
-	public boolean collision(int x, int y)
+	public void collision(int xBlock, int yBlock)
 	{
-		if(map.getBlock())
+		if(xMove > 0)
 		{
-			return true;
+			if(xBlock <= hitBox.x + hitBox.width + xMove && xBlock >= hitBox.x + xMove)
+			{
+				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
+				{
+					canMoveX = false;
+				}
+			}
 		}
-		else if()
+		else if(xMove < 0)
 		{
-			return true;
+			if(xBlock + blockW <= hitBox.x + hitBox.width + xMove && xBlock + blockW >= hitBox.x + xMove)
+			{
+				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
+				{
+					canMoveX = false;
+				}
+			}
 		}
 	}
 	 
 	@Override
 	public void update() 
 	{
-		xMove();
-		yMove();
+		if(up == true) yMove = -5;
+		if(down == true) yMove = 5;
+		if(left == true) xMove = -5;
+		if(right == true) xMove = 5;
+		
+		//graviy and scroll applied here to x/ymove for later clac
 		
 	}
 
@@ -100,4 +111,8 @@ public class Player extends Entity implements KeyListener
 	public void keyTyped(KeyEvent e) {
 	}
 
+	public void setxMove(float scroll) 
+	{
+		xMove += -scroll;
+	}
 }

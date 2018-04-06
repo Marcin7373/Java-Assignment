@@ -96,7 +96,7 @@ public class GameLoop
 			
 			if(timer >= 1000000000)   //fps counter
 			{
-				//System.out.println("FPS: "+frames);
+				System.out.println("FPS: "+frames);
 				frames = 0;
 				timer = 0;
 			}

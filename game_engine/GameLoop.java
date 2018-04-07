@@ -10,7 +10,7 @@ import states.State;
 public class GameLoop
 {
 	private Window window;
-	private static final int width = 1200, height = 600;
+	private static final int width = 1200, height = 500;
 	
 	private Boolean running = true;
 	

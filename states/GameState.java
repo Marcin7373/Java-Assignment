@@ -9,7 +9,7 @@ import game_engine.SpriteCrop;
 
 public class GameState extends State
 {
-	private static float scroll = 3, speedUp = 1.01f;//scroll = 3
+	private static float scroll = 0, speedUp = 1.01f;//scroll = 3
 	private Map map;
 	
 	public GameState(GameLoop game)
@@ -26,7 +26,7 @@ public class GameState extends State
 		}
 		//System.out.println(speedUp);
 		scroll *= speedUp;
-		map.update(scroll, speedUp);
+		map.update(scroll);
 	}
 	
 	public void render(Graphics draw)

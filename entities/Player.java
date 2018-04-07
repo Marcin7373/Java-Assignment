@@ -14,6 +14,7 @@ public class Player extends Entity implements KeyListener
 	private boolean canMoveX = true, canMoveY = true;
 	private int blockW = 100;
 	private int offset = -3;
+	private int speedX = 10, speedY = 10;
 	public Player(float x, float y, int width, int height) 
 	{
 		super(x, y, width, height);
@@ -32,9 +33,11 @@ public class Player extends Entity implements KeyListener
 		{
 			x += xMove;
 		}
+		//scroll to left with level
 		offset -= scroll;
 		x -= offset;
 		offset = (int)scroll;
+		
 		hitBox.x = (int)x;
 		xMove = 0;
 		canMoveX = true;
@@ -45,7 +48,7 @@ public class Player extends Entity implements KeyListener
 		}
 		hitBox.y = (int)y;
 		yMove = 0;
-		canMoveY = true;
+		canMoveY = true;      //reset hitbox
 	}
 	
 	public void collision(int xBlock, int yBlock)
@@ -57,16 +60,41 @@ public class Player extends Entity implements KeyListener
 				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
 				{
 					canMoveX = false;
+					x = xBlock - hitBox.width;
 				}
 			}
 		}
-		else if(xMove < 0)
+		else if(xMove < 0) //going left
 		{
 			if(xBlock + blockW <= hitBox.x + hitBox.width + xMove && xBlock + blockW >= hitBox.x + xMove)
 			{
 				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
 				{
 					canMoveX = false;
+					x = xBlock + blockW;
+				}
+			}
+		}
+		
+		if(yMove > 0) //going down
+		{
+			if(xBlock <= hitBox.x + hitBox.width + xMove && xBlock + blockW >= hitBox.x + xMove)
+			{
+				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
+				{
+					canMoveY = false;
+					y = yBlock - hitBox.height;
+				}
+			}
+		}
+		else if(yMove < 0) //going up
+		{
+			if(xBlock <= hitBox.x + hitBox.width + xMove && xBlock + blockW >= hitBox.x + xMove)
+			{
+				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
+				{
+					canMoveY = false;
+					y = yBlock + 5;
 				}
 			}
 		}
@@ -75,20 +103,20 @@ public class Player extends Entity implements KeyListener
 	@Override
 	public void update() 
 	{
-		if(up == true) yMove = -5;
-		if(down == true) yMove = 5;
-		if(left == true) xMove = -5;
-		if(right == true) xMove = 5;
-		
+		if(up == true) yMove = -speedY;
+		if(down == true) yMove = speedY;
+		if(left == true) xMove = -speedX;
+		if(right == true) xMove = speedX;
+		//yMove+=20;
 		//graviy and scroll applied here to x/ymove for later clac
 		
 	}
 
 	public void render(Graphics draw) 
 	{
-		draw.drawImage(SpriteCrop.one, (int)x, (int)y, width, height, null);
+		draw.drawImage(SpriteCrop.player, (int)x, (int)y, width, height, null);
 		draw.setColor(Color.red);
-		draw.fillRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+		//draw.fillRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
 	}
 
 	public void keyPressed(KeyEvent event) 
@@ -109,10 +137,5 @@ public class Player extends Entity implements KeyListener
 	}
 
 	public void keyTyped(KeyEvent e) {
-	}
-
-	public void setxMove(float scroll) 
-	{
-		xMove += -scroll;
 	}
 }

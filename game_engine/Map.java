@@ -12,7 +12,7 @@ public class Map
 	private int width, height;
 	private final int tPats = 4;
 	private final int bWidth = 100, bHeight = 5; //block width
-	private static int scroll, loop = 0;
+	private int scroll, loop = 0;
 	private Block block;
 	private int[] genMap = new int[tPats];
 	private int[][] pattern1 = new int[2][4];
@@ -21,7 +21,6 @@ public class Map
 	private int[][] pattern4 = new int[2][4];
 	private Player player;
 	Random rand = new Random();
-	private float speedUp;
 	
 	public Map(GameLoop game)
 	{
@@ -44,12 +43,10 @@ public class Map
 		genMap[tPats-1] = rand.nextInt(tPats)+1;
 	}
 	
-	public void update(float scroll, float speedUp)
+	public void update(float scroll)
 	{
 		this.scroll = (int)-scroll;
 		player.update();
-		this.speedUp = speedUp;
-		//player.Move(speedUp);
 	}
 	
 	public void render(Graphics draw)
@@ -68,7 +65,6 @@ public class Map
 			}
 			
 			xEnd = xEnd * patID + scroll + loop;
-			//System.out.println("M "+scroll);
 			
 			if(genMap[patID] == 1)
 			{
@@ -78,7 +74,6 @@ public class Map
 					block.setY(pattern1[1][bCount]);
 					player.collision(pattern1[0][bCount] + xEnd, pattern1[1][bCount]);
 					block.render(draw);
-					//System.out.println("M "+xEnd);
 				}
 			}
 			else if(genMap[patID] == 2)
@@ -172,12 +167,12 @@ public class Map
 		return bHeight;
 	}
 
-	public static int getScroll() {
+	public int getScroll() {
 		return scroll;
 	}
 
-	public static void setScroll(int scroll) {
-		Map.scroll = scroll;
+	public void setScroll(int scroll) {
+		this.scroll = scroll;
 	}
 
 	public Block getBlock() {

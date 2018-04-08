@@ -24,11 +24,6 @@ public class GameLoop
 	
 	public GameLoop() //constructor
 	{	
-		
-	}
-	
-	private void init()
-	{
 		setWindow(new Window(width, height));
 		SpriteCrop.init();
 		
@@ -69,8 +64,6 @@ public class GameLoop
 	//required by Runnable
 	public void run()                 //2. Main game loop started by start 
 	{							 
-		init();
-		
 		int fps = 60;
 		double timePerFrame = 1000000000 / fps; //1 billion nanosecs in sec
 		double delta = 0;              //time until next call

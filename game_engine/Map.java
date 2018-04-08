@@ -27,7 +27,8 @@ public class Map
 		this.game = game;
 		width = game.getWidth();
 		height = game.getHeight();
-		player = new Player(500, 100, 50, 50);
+		player = new Player(120, height-70, 50, 50);
+		player.setOffset(-scroll);
 		game.getWindow().getFrame().addKeyListener(player);
 		block = new Block(0,0, bWidth, bHeight);
 		
@@ -46,6 +47,7 @@ public class Map
 	public void update(float scroll)
 	{
 		this.scroll = (int)-scroll;
+		player.setScroll(this.scroll);
 		player.update();
 	}
 	
@@ -107,7 +109,6 @@ public class Map
 				}
 			}
 		}
-		player.Move(scroll);
 		player.render(draw);
 	}
 	

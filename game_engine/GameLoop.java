@@ -4,15 +4,14 @@ import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import states.GameState;
-import states.Menu;
+import states.MenuState;
 import states.State;
 
 public class GameLoop
 {
 	private Window window;
 	private static final int width = 1200, height = 500;
-	
-	private Boolean running = true;
+	private Boolean running = true, stateF = true;
 	
 	private BufferStrategy bufferStrat;
 	private Graphics draw;
@@ -28,12 +27,15 @@ public class GameLoop
 		SpriteCrop.init();
 		
 		gameState = new GameState(this);
-		menuState = new Menu(this);
+		menuState = new MenuState(this);
 		State.setState(gameState);
 	}
 
 	private void update()
 	{
+		
+		//State.setState(menuState);
+		
 		if(State.getState() != null)
 		{
 			State.getState().update();
@@ -63,7 +65,7 @@ public class GameLoop
 	
 	//required by Runnable
 	public void run()                 //2. Main game loop started by start 
-	{							 
+	{	/*****REF Code taken from Codenmore and other sources******/						 
 		int fps = 60;
 		double timePerFrame = 1000000000 / fps; //1 billion nanosecs in sec
 		double delta = 0;              //time until next call
@@ -93,7 +95,7 @@ public class GameLoop
 				frames = 0;
 				timer = 0;
 			}
-		}
+		}/***REF code taken from codenmore and otherplaces***/
 	}
 
 	public Window getWindow() {
@@ -110,5 +112,37 @@ public class GameLoop
 
 	public int getHeight() {
 		return height;
+	}
+	
+	public State getGameState() {
+		return gameState;
+	}
+
+	public void setGameState(State gameState) {
+		this.gameState = gameState;
+	}
+
+	public State getMenuState() {
+		return menuState;
+	}
+
+	public void setMenuState(State menuState) {
+		this.menuState = menuState;
+	}
+
+	public Boolean getRunning() {
+		return running;
+	}
+
+	public void setRunning(Boolean running) {
+		this.running = running;
+	}
+
+	public Boolean getStateF() {
+		return stateF;
+	}
+
+	public void setStateF(Boolean stateF) {
+		this.stateF = stateF;
 	}
 }

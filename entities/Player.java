@@ -12,20 +12,21 @@ public class Player extends Entity implements KeyListener
 	private boolean left, right, up, down;
 	private int xMove, yMove;
 	private boolean canMoveX = true, canMoveYUp = true, canMoveYDown = true;
-	private boolean peakF = false, jumpF = false, deathF = false;   //flags
-	private int blockW = 100;
+	private boolean groundF = false, peakF = false, jumpF = false, deathF = false;   //flags
+	private int blockW = 98; 
 	private int offset, scroll, distance;
-	private int speedX = 13, speedY = 8, velocityY = 1, gravity = 1;
+	private int speedX = 7, speedY = 18; //x = 13 y = 8
+	private float velocityY = 1, gravity = 0;
 	public Player(float x, float y, int width, int height) 
 	{
 		super(x, y, width, height);
 		this.width = width;
 		this.height = height;
 		
-		hitBox.x = (int)x+2;  //set up size of hitbox
-		hitBox.y = (int)y+1;
-		hitBox.width = width-4;
-		hitBox.height = height-2;
+		hitBox.x = (int)x;  //set up size of hitbox
+		hitBox.y = (int)y;
+		hitBox.width = width;
+		hitBox.height = height;
 	}
 
 	@Override
@@ -33,10 +34,12 @@ public class Player extends Entity implements KeyListener
 	{
 		xMove = 0;
 		yMove = 0;
+		
+		jump();
+		
 		if(left == true) xMove += -speedX;
 		if(right == true) xMove += speedX;
-		if(up == true) yMove += -speedX;
-		if(down == true) yMove += speedX;
+		
 		
 		if(canMoveX == true)
 		{
@@ -58,23 +61,10 @@ public class Player extends Entity implements KeyListener
 			y += yMove;
 			hitBox.y += yMove;
 		}
-		canMoveYDown = true;
-		canMoveYUp = true;
 	}
 	
 	public void jump()    //jump!!!!!!!!!!!!!!!!!!!!!!!
 	{	
-		//System.out.println(canMoveYUp);
-		//System.out.println(canMoveYDown);
-		/*if(gravityF == false)
-		{
-			gravity = 0;
-			gravityF = true;
-		}
-		System.out.println(gravity);
-		*/
-		xMove = 0;
-		yMove = 0;
 		if(left == true) xMove = -speedX;
 		if(right == true) xMove = speedX;
 		
@@ -82,21 +72,22 @@ public class Player extends Entity implements KeyListener
 		{
 			velocityY = 1;
 			peakF = false;
+			groundF = true;
 		}
 		
 		if(canMoveYUp == false)
 		{
 			velocityY = 0;
-			peakF = false;
-		}
-		
-		if(velocityY <= 0)
-		{
 			peakF = true;
 		}
-		else if(velocityY > 0)
+		
+		if(velocityY > 0)
 		{
 			peakF = false;
+		}
+		else if(velocityY <= 0)
+		{
+			peakF = true;
 		}
 		
 		if(peakF == true)
@@ -106,67 +97,83 @@ public class Player extends Entity implements KeyListener
 		
 		if(jumpF == true || peakF == true)
 		{
-			up = false;
+			//up = false;
+			groundF = false;
 		}
 		
 		if(up == true)
 		{
-			if((canMoveYDown == false || jumpF == true) && peakF == false)
+			if((groundF == true || jumpF == true) && peakF == false)
 			{
 				jumpF = true;
 				yMove -= speedY * velocityY;
-				velocityY -= 0.1;
-				System.out.println(yMove+speedY);
+				velocityY += 0.004;
+				
 			}
 		}
-		else if(jumpF == true && peakF == false)
+		
+		if(jumpF == true || peakF == true)
 		{
 			yMove -= speedY * velocityY;
-			velocityY -= 0.2;
+			velocityY = velocityY - 0.03f;
 		}
 		
+		if(jumpF == false && peakF == false && groundF == true && canMoveYDown == false)
+		{
+			yMove += 5;
+		}
+		
+		
+		System.out.println("vel: "+velocityY+" Jump:"+jumpF+" Peak:"+peakF+" Can:"+canMoveYDown+" Ground:"+groundF);
 		if(down == true) 
 		{
-			yMove += speedY;
+			yMove = speedY;
 		}
 	
-		canMoveYDown = true;
+		
+		
+		if(jumpF == true)
+		{
+			canMoveYDown = true;
+		}
 		canMoveYUp = true;
 	}
 	
 	public void collision(int xBlock, int yBlock)
 	{
-		int off = 1;
-		if(xMove > 0)//remove yMove == 0 deal with the other problem and check order of execution i.e not render that one frame 
+		xBlock -= 2; //makes block hitBox smaller
+		int off = 1; //offset o stop triggering hitbox when pushing back
+		if(xMove > 0) 
 		{
-			if(xBlock <= hitBox.x + hitBox.width + xMove && xBlock >= hitBox.x + xMove)
+			if(xBlock +3<= hitBox.x + hitBox.width + xMove && xBlock +3>= hitBox.x + xMove)
 			{
-				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
+				if(yBlock <= hitBox.y + hitBox.height -yMove&& yBlock >= hitBox.y -yMove)
 				{
 					canMoveX = false;
-			
-					hitBox.x -= x - (xBlock - hitBox.width - off);
+					System.out.println(x- (xBlock - hitBox.width - off));
+					hitBox.x -= x - (xBlock - hitBox.width - off);//have to get old x before change
 					x = xBlock - hitBox.width - off;
 				}
 			}
 		}
 		else if(xMove < 0) //going left
 		{
-			if(xBlock + blockW <= hitBox.x + hitBox.width + xMove && xBlock + blockW >= hitBox.x + xMove)
-			{
-				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
+			if(xBlock + blockW -3<= hitBox.x + hitBox.width + xMove && xBlock + blockW -3>= hitBox.x + xMove)
+			{     //+13 -13
+				if(yBlock <= hitBox.y + hitBox.height -yMove && yBlock >= hitBox.y - yMove)
 				{
 					canMoveX = false;
 					
 					hitBox.x -= x - (xBlock + blockW + off); 
 					x = xBlock + blockW + off;
+					
 				}
 			}
 		}
 		
 		if(yMove > 0) //going down
 		{
-			if(xBlock <= hitBox.x + hitBox.width + xMove && xBlock + blockW >= hitBox.x + xMove)
+			if(xBlock +3<= hitBox.x + hitBox.width && xBlock + blockW -3>= hitBox.x)
 			{
 				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
 				{
@@ -178,8 +185,8 @@ public class Player extends Entity implements KeyListener
 			}
 		}
 		else if(yMove < 0) //going up
-		{
-			if(xBlock <= hitBox.x + hitBox.width + xMove && xBlock + blockW >= hitBox.x + xMove)
+		{     //50 <= x  && 200 >= x   52 <= x  && 198 >= x
+			if(xBlock +3<= hitBox.x + hitBox.width && xBlock + blockW -3>= hitBox.x)
 			{
 				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
 				{

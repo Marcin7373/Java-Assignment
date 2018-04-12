@@ -30,7 +30,7 @@ public class GameState extends State
 		}
 
 		//System.out.println(scroll+" "+speedUp);
-		//scroll *= speedUp;
+		scroll *= speedUp;
 		map.update(scroll);
 	}
 	

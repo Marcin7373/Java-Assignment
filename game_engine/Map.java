@@ -27,7 +27,7 @@ public class Map
 		this.game = game;
 		width = game.getWidth();
 		height = game.getHeight();
-		player = new Player(120, height-70, 50, 50);
+		player = new Player(120, height-71, 50, 50, width, height);
 		player.setOffset(-scroll);
 		game.getWindow().getFrame().addKeyListener(player);
 		block = new Block(0,0, bWidth, bHeight);

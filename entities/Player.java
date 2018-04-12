@@ -11,17 +11,20 @@ public class Player extends Entity implements KeyListener
 {
 	private boolean left, right, up, down;
 	private int xMove, yMove;
-	private boolean canMoveX = true, canMoveYUp = true, canMoveYDown = true;
+	private boolean canMoveX = true, canMoveYUp = true, canMoveYDown = false; //canMoveYDown = false so player can jump at spawn
 	private boolean groundF = false, peakF = false, jumpF = false, deathF = false;   //flags
-	private int blockW = 98; 
-	private int offset, scroll, distance;
-	private int speedX = 7, speedY = 18; //x = 13 y = 8
+	private int blockW = 98, mWidth, mHeight;; 
+	private int offset, scroll, distance, jumpCount = 0;
+	private int speedX = 9, speedY = 16; //x = 9 y = 8
 	private float velocityY = 1, gravity = 0;
-	public Player(float x, float y, int width, int height) 
+	
+	public Player(float x, float y, int width, int height, int mWidth, int mHeight) 
 	{
 		super(x, y, width, height);
 		this.width = width;
 		this.height = height;
+		this.mWidth = mWidth;
+		this.mHeight = mHeight;
 		
 		hitBox.x = (int)x;  //set up size of hitbox
 		hitBox.y = (int)y;
@@ -101,30 +104,40 @@ public class Player extends Entity implements KeyListener
 			groundF = false;
 		}
 		
+
+		/*if(up == true && groundF == true)
+		{
+			jumpCount++;
+		}
+		
+		if(jumpCount > 1)
+		{
+			up = false;
+			jumpCount = 0;
+		} prevent double jumping*/
+		
 		if(up == true)
 		{
 			if((groundF == true || jumpF == true) && peakF == false)
 			{
 				jumpF = true;
 				yMove -= speedY * velocityY;
-				velocityY += 0.004;
-				
+				velocityY += 0.03;//total jump
 			}
 		}
 		
 		if(jumpF == true || peakF == true)
 		{
 			yMove -= speedY * velocityY;
-			velocityY = velocityY - 0.03f;
+			velocityY = velocityY - 0.1f;//fall rate
 		}
 		
 		if(jumpF == false && peakF == false && groundF == true && canMoveYDown == false)
 		{
-			yMove += 5;
+			yMove += 7;
 		}
+		//System.out.println("vel: "+velocityY+" Jump:"+jumpF+" Peak:"+peakF+" Can:"+canMoveYDown+" Ground:"+groundF);
 		
-		
-		System.out.println("vel: "+velocityY+" Jump:"+jumpF+" Peak:"+peakF+" Can:"+canMoveYDown+" Ground:"+groundF);
 		if(down == true) 
 		{
 			yMove = speedY;
@@ -141,25 +154,32 @@ public class Player extends Entity implements KeyListener
 	
 	public void collision(int xBlock, int yBlock)
 	{
-		xBlock -= 2; //makes block hitBox smaller
+		xBlock -= 2; //makes block hitBox smaller = -2
 		int off = 1; //offset o stop triggering hitbox when pushing back
 		if(xMove > 0) 
 		{
 			if(xBlock +3<= hitBox.x + hitBox.width + xMove && xBlock +3>= hitBox.x + xMove)
 			{
-				if(yBlock <= hitBox.y + hitBox.height -yMove&& yBlock >= hitBox.y -yMove)
+				if(yBlock <= hitBox.y + hitBox.height -yMove && yBlock >= hitBox.y -yMove)
 				{
 					canMoveX = false;
-					System.out.println(x- (xBlock - hitBox.width - off));
+					
 					hitBox.x -= x - (xBlock - hitBox.width - off);//have to get old x before change
 					x = xBlock - hitBox.width - off;
 				}
+			}
+			
+			if(mWidth <= hitBox.x + hitBox.width + xMove && mWidth >= hitBox.x + xMove) 
+			{
+				canMoveX = false;
+				hitBox.x -= x - (mWidth - hitBox.width - off);//have to get old x before change
+				x = mWidth - hitBox.width - off;
 			}
 		}
 		else if(xMove < 0) //going left
 		{
 			if(xBlock + blockW -3<= hitBox.x + hitBox.width + xMove && xBlock + blockW -3>= hitBox.x + xMove)
-			{     //+13 -13
+			{  
 				if(yBlock <= hitBox.y + hitBox.height -yMove && yBlock >= hitBox.y - yMove)
 				{
 					canMoveX = false;
@@ -182,6 +202,11 @@ public class Player extends Entity implements KeyListener
 					hitBox.y -= (int) (y -(yBlock - hitBox.height - off));
 					y = yBlock - hitBox.height - off;
 				}
+			}
+			
+			if(mHeight <= hitBox.y + hitBox.height + yMove && mHeight >= hitBox.y + yMove)
+			{
+				deathF = true;
 			}
 		}
 		else if(yMove < 0) //going up

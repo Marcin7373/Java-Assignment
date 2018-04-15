@@ -13,9 +13,9 @@ import states.State;
 public class GameLoop
 {
 	private Window window;
-	private static final int width = 1200, height = 500;
-	private float distance;
-	
+	private static final int width = 1200, height = 500;//window sizes
+	private float distance;            //
+	//
 	private BufferStrategy bufferStrat;
 	private Graphics draw;
 	public BufferedImage test;
@@ -29,77 +29,63 @@ public class GameLoop
 		setWindow(new Window(width, height));
 		SpriteCrop.init();
 		
-		gameState = new GameState(this);
-		menuState = new MenuState(this);
-		this.getWindow().getFrame().addKeyListener((KeyListener) menuState);
-		State.setState(gameState);
+		gameState = new GameState(this);      //game = were all playing will happen
+		menuState = new MenuState(this);      //menu = after death menu restarts game = death screen
+		this.getWindow().getFrame().addKeyListener((KeyListener) menuState);//KeyListener used by menu added to window
+		State.setState(gameState);            //start the game in game as opposed to menu
 	}
-
+    //Updates variables for positions of objects and other
 	private void update()
 	{
-		if(gameState.getMap().getPlayer().isDeathF())
+		if(gameState.getMap().getPlayer().isDeathF()) //if death flag set by player 
 		{
-			distance = gameState.getMap().getPlayer().getDistance();
-			gameState = new GameState(this);
-			State.setState(menuState);
+			distance = gameState.getMap().getPlayer().getDistance();//get distance traveled 
+			State.setState(menuState);                              //back to menu to show score
 		}
 
-		if(menuState.isStart())
+		if(menuState.isStart())                                     //if prompt triggered in menu 
 		{
-			State.setState(gameState);
-			menuState.setStart(false);
+			gameState = new GameState(this);                        //start new game
+			State.setState(gameState);                              //load the new game
+			menuState.setStart(false);                              //menu object is the same so reset start flag
 		}
-		//State.setState(menuState);
 		
-		if(State.getState() != null)
-		{
-			State.getState().update();
-		}
+		State.getState().update();                                  //update whichever state is set
 	}
-	
-	public float getDistance() {
-		return distance;
-	}
-
-	public void setDistance(float distance) {
-		this.distance = distance;
-	}
-
+	//Renders or displays things in coordinates updated by update
 	private void render()
 	{
-		/***REF***/
-		bufferStrat = getWindow().getCanvas().getBufferStrategy();
+		/***REF Code taken from Codenmore***/
+		bufferStrat = getWindow().getCanvas().getBufferStrategy();//image buffer
+		
 		if(bufferStrat == null)
 		{
-			getWindow().getCanvas().createBufferStrategy(3);
+			getWindow().getCanvas().createBufferStrategy(3); //create new one if one doesn't exist     
 			return;
 		}
 		
 		draw = bufferStrat.getDrawGraphics();
-		draw.clearRect(0, 0, width, height);
+		draw.clearRect(0, 0, width, height); //clears the screen for next frame
 		
-		if(State.getState() != null)
-		{
-			State.getState().render(draw);
-		}
+		State.getState().render(draw);	     //renders whichever state is set
 		
-		bufferStrat.show();
-		draw.dispose();
-		/***ref***/
+		bufferStrat.show();                  //shows everything to this point
+		draw.dispose();                      //for next frame
+		/***REF Code taken from Codenmore***/
 	}
 	
 	//required by Runnable
-	public void run()                 //2. Main game loop started by start 
-	{	/*****REF Code taken from Codenmore and other sources******/						 
+	public void run()                 //Main game loop started by main 
+	{	/*****REF Code taken from https://github.com/CodeNMore/New-Beginner-Java-Game-Programming-Src******/						 
 		int fps = 60;
 		double timePerFrame = 1000000000 / fps; //1 billion nanosecs in sec
 		double delta = 0;              //time until next call
 		long now;        
 		long lastTime = System.nanoTime();
-		long timer = 0;                 //time until 1 sec /for fps
-		long frames = 0;                //                 /counter
+		long timer = 0;                 //time until 1 sec     |for fps
+		long frames = 0;                //counts up to fps set |counter
 		
-		while(true)
+		while(true)  //runs until game is canceled out of
 		{
 			now = System.nanoTime();
 			delta += (now - lastTime) / timePerFrame;
@@ -120,9 +106,10 @@ public class GameLoop
 				frames = 0;
 				timer = 0;
 			}
-		}/***REF code taken from codenmore and otherplaces***/
+		}/***REF code taken from Codenmore***/
 	}
 
+	/***Getters and Setters***/
 	public Window getWindow() {
 		return window;
 	}
@@ -153,5 +140,8 @@ public class GameLoop
 
 	public void setMenuState(State menuState) {
 		this.menuState = menuState;
+	}
+	public float getDistance() {
+		return distance;
 	}
 }

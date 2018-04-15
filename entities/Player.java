@@ -1,12 +1,10 @@
 package entities;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import gfx.PlayerAnimation;
-import gfx.SpriteCrop;
 
 public class Player extends Entity implements KeyListener
 {
@@ -15,10 +13,10 @@ public class Player extends Entity implements KeyListener
 	private boolean canMoveX = true, canMoveYUp = true, canMoveYDown = false; //canMoveYDown = false so player can jump at spawn
 	private boolean groundF = false, peakF = false, jumpF = false, deathF = false;   //flags
 	private int blockW = 98, mWidth, mHeight; 
-	private int offset, scroll, distance, jumpCount = 0;
+	private int offset, scroll;
 	private int speedX = 9, speedY = 16; //x = 9 y = 8
-	private float velocityY = 1, gravity = 0;
-	private PlayerAnimation animation;
+	private float velocityY = 1, distance;
+	private PlayerAnimation pAnimation;
 	
 	public Player(float x, float y, int width, int height, int mWidth, int mHeight) 
 	{
@@ -27,7 +25,7 @@ public class Player extends Entity implements KeyListener
 		this.height = height;
 		this.mWidth = mWidth;
 		this.mHeight = mHeight;
-		animation = new PlayerAnimation(width, height);
+		pAnimation = new PlayerAnimation(width, height);
 		
 		hitBox.x = (int)x+2;  //set up size of hitbox
 		hitBox.y = (int)y;
@@ -49,7 +47,10 @@ public class Player extends Entity implements KeyListener
 		
 		if(canMoveX == true)
 		{
-			if((x +xMove) - x > 0) distance += (int) + ((x + xMove) - x); //track distance
+			if((x +xMove) - x > 0) 
+			{
+				distance += ((x + xMove) - x); //track distance
+			}
 			x += xMove;
 			hitBox.x += xMove;
 		}
@@ -108,17 +109,6 @@ public class Player extends Entity implements KeyListener
 			groundF = false;
 		}
 		
-		/*if(up == true && groundF == true)
-		{
-			jumpCount++;
-		}
-		
-		if(jumpCount > 1)
-		{
-			up = false;
-			jumpCount = 0;
-		} prevent double jumping*/
-		
 		if(up == true)
 		{
 			if((groundF == true || jumpF == true) && peakF == false)
@@ -170,11 +160,11 @@ public class Player extends Entity implements KeyListener
 				}
 			}
 			
-			if(mWidth <= hitBox.x + hitBox.width + xMove && mWidth >= hitBox.x + xMove) 
+			if(mWidth+40 <= hitBox.x + hitBox.width + xMove) //+40=allow some o the player to go through
 			{
 				canMoveX = false;
-				hitBox.x -= x - (mWidth - hitBox.width - off);//have to get old x before change
-				x = mWidth - hitBox.width - off;
+				hitBox.x -= x - (mWidth - hitBox.width - off + 40);//have to get old x before change
+				x = mWidth - hitBox.width - off + 40;
 			}
 		}
 		else if(xMove < 0) //going left
@@ -231,9 +221,7 @@ public class Player extends Entity implements KeyListener
 
 	public void render(Graphics draw) 
 	{
-		animation.render(draw, x, y, groundF);
-		draw.setColor(Color.red);
-		//draw.fillRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+		pAnimation.render(draw, x, y, groundF);
 	}
 
 	public void keyPressed(KeyEvent event) 
@@ -288,7 +276,7 @@ public class Player extends Entity implements KeyListener
 		this.deathF = deathF;
 	}
 
-	public int getDistance() {
+	public float getDistance() {
 		return distance;
 	}
 

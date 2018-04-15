@@ -5,7 +5,7 @@ import java.awt.Graphics;
 public class PlayerAnimation 
 {
 	private int width, height, count = 0, i = 0, j = 0;
-	private boolean toggleG, lockJ, lockL;//toggle ground
+	private boolean toggleG, lockJ, lockL;//toggle ground, lock on jump, lock on land
 	
 	public PlayerAnimation(int width, int height)
 	{
@@ -26,10 +26,9 @@ public class PlayerAnimation
 			{
 				count = 0;
 				j++;
-				if(j > 2) j = 0;
+				if(j > 1) j = 0;
 				
 			}
-			
 			draw.drawImage(SpriteCrop.playerA[j], (int)x, (int)y, width, height, null);
 		}
 		else if(lockL == true)
@@ -58,7 +57,7 @@ public class PlayerAnimation
 					lockJ = false;
 				}
 			}
-			draw.drawImage(SpriteCrop.block, (int)x, (int)y, width, height, null);
+			draw.drawImage(SpriteCrop.playerJump[i], (int)x, (int)y, width, height, null);
 		}
 		
 		toggleG = groundF;

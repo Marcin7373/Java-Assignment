@@ -1,5 +1,6 @@
 package states;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -12,7 +13,6 @@ import game_engine.GameLoop;
 public class MenuState extends State implements KeyListener
 {
 	private float distance, highScore;
-	private int count = 0;
 	private boolean start = false;
 	
 	public MenuState(GameLoop game)
@@ -37,8 +37,12 @@ public class MenuState extends State implements KeyListener
 	{
 		Graphics2D draw2 = (Graphics2D)draw;
 		draw2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-        draw2.setFont(new Font("Serif", Font.BOLD, 70));
-        draw2.drawString("Distnace: "+distance+"   Highscore: "+highScore, 70, 320); 
+        draw2.setFont(new Font("Dialog", Font.BOLD, 70));
+        //draw.setColor(Color.GREEN);
+        draw2.drawString("Distance: "+distance+"   Highscore: "+highScore, 70, 320); 
+        //dialog, helvetica
+      //--- Get an array of font names (smaller than the number of fonts)
+        //String[] fontNames = ge.getAvailableFontFamilyNames();
 	}	
 
 	@Override

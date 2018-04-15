@@ -9,10 +9,9 @@ import gfx.Background;
 
 public class Map 
 {
-	private GameLoop game;
 	private int width, height;
 	private final int tPats = 5, blockNo = 4;
-	private final int bWidth = 100, bHeight = 5; //block width
+	private final int bWidth = 100, bHeight = 10; //block width
 	private int scroll, loop = 0;
 	private Block block;
 	private int[] genMap = new int[tPats];
@@ -27,7 +26,6 @@ public class Map
 	
 	public Map(GameLoop game)
 	{
-		this.game = game;
 		width = game.getWidth();
 		height = game.getHeight();
 		background = new Background(width, height); 

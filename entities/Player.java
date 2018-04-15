@@ -4,8 +4,9 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import game_engine.Map;
-import game_engine.SpriteCrop;
+
+import gfx.PlayerAnimation;
+import gfx.SpriteCrop;
 
 public class Player extends Entity implements KeyListener
 {
@@ -13,10 +14,11 @@ public class Player extends Entity implements KeyListener
 	private int xMove, yMove;
 	private boolean canMoveX = true, canMoveYUp = true, canMoveYDown = false; //canMoveYDown = false so player can jump at spawn
 	private boolean groundF = false, peakF = false, jumpF = false, deathF = false;   //flags
-	private int blockW = 98, mWidth, mHeight;; 
+	private int blockW = 98, mWidth, mHeight; 
 	private int offset, scroll, distance, jumpCount = 0;
 	private int speedX = 9, speedY = 16; //x = 9 y = 8
 	private float velocityY = 1, gravity = 0;
+	private PlayerAnimation animation;
 	
 	public Player(float x, float y, int width, int height, int mWidth, int mHeight) 
 	{
@@ -25,11 +27,12 @@ public class Player extends Entity implements KeyListener
 		this.height = height;
 		this.mWidth = mWidth;
 		this.mHeight = mHeight;
+		animation = new PlayerAnimation(width, height);
 		
-		hitBox.x = (int)x;  //set up size of hitbox
+		hitBox.x = (int)x+2;  //set up size of hitbox
 		hitBox.y = (int)y;
-		hitBox.width = width;
-		hitBox.height = height;
+		hitBox.width = width-4;
+		hitBox.height = height-1;
 	}
 
 	@Override
@@ -77,11 +80,16 @@ public class Player extends Entity implements KeyListener
 			peakF = false;
 			groundF = true;
 		}
+		else
+		{
+			groundF = false;
+		}
 		
 		if(canMoveYUp == false)
 		{
 			velocityY = 0;
 			peakF = true;
+			jumpF = false;
 		}
 		
 		if(velocityY > 0)
@@ -91,10 +99,6 @@ public class Player extends Entity implements KeyListener
 		else if(velocityY <= 0)
 		{
 			peakF = true;
-		}
-		
-		if(peakF == true)
-		{
 			jumpF = false;
 		}
 		
@@ -104,7 +108,6 @@ public class Player extends Entity implements KeyListener
 			groundF = false;
 		}
 		
-
 		/*if(up == true && groundF == true)
 		{
 			jumpCount++;
@@ -129,26 +132,24 @@ public class Player extends Entity implements KeyListener
 		if(jumpF == true || peakF == true)
 		{
 			yMove -= speedY * velocityY;
-			velocityY = velocityY - 0.1f;//fall rate
+			if(velocityY > -1.8)//cap on falling speed
+			{
+				velocityY = velocityY - 0.1f;//fall rate
+			}
 		}
 		
-		if(jumpF == false && peakF == false && groundF == true && canMoveYDown == false)
+		if(jumpF == false && peakF == false)
 		{
-			yMove += 7;
+			yMove += 13;//sliding of edge gravity
 		}
 		//System.out.println("vel: "+velocityY+" Jump:"+jumpF+" Peak:"+peakF+" Can:"+canMoveYDown+" Ground:"+groundF);
-		
+		System.out.println(distance);
 		if(down == true) 
 		{
-			yMove = speedY;
+			yMove = speedY+5;
 		}
-	
 		
-		
-		if(jumpF == true)
-		{
-			canMoveYDown = true;
-		}
+		canMoveYDown = true;
 		canMoveYUp = true;
 	}
 	
@@ -186,11 +187,14 @@ public class Player extends Entity implements KeyListener
 					
 					hitBox.x -= x - (xBlock + blockW + off); 
 					x = xBlock + blockW + off;
-					
 				}
 			}
 		}
-		
+		else if(0 >= hitBox.x + hitBox.width + xMove)
+		{
+			deathF = true;
+		}
+
 		if(yMove > 0) //going down
 		{
 			if(xBlock +3<= hitBox.x + hitBox.width && xBlock + blockW -3>= hitBox.x)
@@ -204,13 +208,15 @@ public class Player extends Entity implements KeyListener
 				}
 			}
 			
-			if(mHeight <= hitBox.y + hitBox.height + yMove && mHeight >= hitBox.y + yMove)
+			if(mHeight+height <= hitBox.y + hitBox.height + yMove && mHeight+height >= hitBox.y + yMove)
 			{
-				deathF = true;
+				//deathF = true;
+				hitBox.y = 0;
+				y = 0;
 			}
 		}
 		else if(yMove < 0) //going up
-		{     //50 <= x  && 200 >= x   52 <= x  && 198 >= x
+		{    
 			if(xBlock +3<= hitBox.x + hitBox.width && xBlock + blockW -3>= hitBox.x)
 			{
 				if(yBlock <= hitBox.y + hitBox.height + yMove && yBlock >= hitBox.y + yMove)
@@ -225,9 +231,9 @@ public class Player extends Entity implements KeyListener
 
 	public void render(Graphics draw) 
 	{
-		draw.drawImage(SpriteCrop.player, (int)x, (int)y, width, height, null);
+		animation.render(draw, x, y, groundF);
 		draw.setColor(Color.red);
-		draw.fillRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
+		//draw.fillRect(hitBox.x, hitBox.y, hitBox.width, hitBox.height);
 	}
 
 	public void keyPressed(KeyEvent event) 
@@ -236,6 +242,10 @@ public class Player extends Entity implements KeyListener
 		if(event.getKeyCode() == KeyEvent.VK_S) down = true;
 		if(event.getKeyCode() == KeyEvent.VK_A) left = true;
 		if(event.getKeyCode() == KeyEvent.VK_D) right = true;
+		if(event.getKeyCode() == KeyEvent.VK_UP) up = true;
+		if(event.getKeyCode() == KeyEvent.VK_DOWN) down = true;
+		if(event.getKeyCode() == KeyEvent.VK_LEFT) left = true;
+		if(event.getKeyCode() == KeyEvent.VK_RIGHT) right = true;
 	}
 
 	@Override
@@ -245,6 +255,10 @@ public class Player extends Entity implements KeyListener
 		if(event.getKeyCode() == KeyEvent.VK_S) down = false;
 		if(event.getKeyCode() == KeyEvent.VK_A) left = false;
 		if(event.getKeyCode() == KeyEvent.VK_D) right = false;
+		if(event.getKeyCode() == KeyEvent.VK_UP) up = false;
+		if(event.getKeyCode() == KeyEvent.VK_DOWN) down = false;
+		if(event.getKeyCode() == KeyEvent.VK_LEFT) left = false;
+		if(event.getKeyCode() == KeyEvent.VK_RIGHT) right = false;
 	}
 
 	public void keyTyped(KeyEvent e) {
@@ -264,5 +278,21 @@ public class Player extends Entity implements KeyListener
 
 	public void setScroll(int scroll) {
 		this.scroll = scroll;
+	}
+
+	public boolean isDeathF() {
+		return deathF;
+	}
+
+	public void setDeathF(boolean deathF) {
+		this.deathF = deathF;
+	}
+
+	public int getDistance() {
+		return distance;
+	}
+
+	public void setDistance(int distance) {
+		this.distance = distance;
 	}
 }

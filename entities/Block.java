@@ -2,7 +2,7 @@ package entities;
 
 import java.awt.Graphics;
 
-import game_engine.SpriteCrop;
+import gfx.SpriteCrop;
 
 public class Block extends Entity
 {	

@@ -1,8 +1,11 @@
 package game_engine;
 
 import java.awt.Graphics;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+
+import gfx.SpriteCrop;
 import states.GameState;
 import states.MenuState;
 import states.State;
@@ -11,7 +14,7 @@ public class GameLoop
 {
 	private Window window;
 	private static final int width = 1200, height = 500;
-	private Boolean running = true, stateF = true;
+	private float distance;
 	
 	private BufferStrategy bufferStrat;
 	private Graphics draw;
@@ -28,12 +31,24 @@ public class GameLoop
 		
 		gameState = new GameState(this);
 		menuState = new MenuState(this);
+		this.getWindow().getFrame().addKeyListener((KeyListener) menuState);
 		State.setState(gameState);
 	}
 
 	private void update()
 	{
-		
+		if(gameState.getMap().getPlayer().isDeathF())
+		{
+			distance = gameState.getMap().getPlayer().getDistance();
+			gameState = new GameState(this);
+			State.setState(menuState);
+		}
+
+		if(menuState.isStart())
+		{
+			State.setState(gameState);
+			menuState.setStart(false);
+		}
 		//State.setState(menuState);
 		
 		if(State.getState() != null)
@@ -42,8 +57,17 @@ public class GameLoop
 		}
 	}
 	
+	public float getDistance() {
+		return distance;
+	}
+
+	public void setDistance(float distance) {
+		this.distance = distance;
+	}
+
 	private void render()
 	{
+		/***REF***/
 		bufferStrat = getWindow().getCanvas().getBufferStrategy();
 		if(bufferStrat == null)
 		{
@@ -61,6 +85,7 @@ public class GameLoop
 		
 		bufferStrat.show();
 		draw.dispose();
+		/***ref***/
 	}
 	
 	//required by Runnable
@@ -128,21 +153,5 @@ public class GameLoop
 
 	public void setMenuState(State menuState) {
 		this.menuState = menuState;
-	}
-
-	public Boolean getRunning() {
-		return running;
-	}
-
-	public void setRunning(Boolean running) {
-		this.running = running;
-	}
-
-	public Boolean getStateF() {
-		return stateF;
-	}
-
-	public void setStateF(Boolean stateF) {
-		this.stateF = stateF;
 	}
 }

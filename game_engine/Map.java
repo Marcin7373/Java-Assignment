@@ -5,21 +5,24 @@ import java.util.Random;
 
 import entities.Block;
 import entities.Player;
+import gfx.Background;
 
 public class Map 
 {
 	private GameLoop game;
 	private int width, height;
-	private final int tPats = 4;
+	private final int tPats = 5, blockNo = 4;
 	private final int bWidth = 100, bHeight = 5; //block width
 	private int scroll, loop = 0;
 	private Block block;
 	private int[] genMap = new int[tPats];
-	private int[][] pattern1 = new int[2][4];
-	private int[][] pattern2 = new int[2][4];
-	private int[][] pattern3 = new int[2][4];
-	private int[][] pattern4 = new int[2][4];
+	private int[][] pattern1 = new int[2][blockNo];
+	private int[][] pattern2 = new int[2][blockNo];
+	private int[][] pattern3 = new int[2][blockNo];
+	private int[][] pattern4 = new int[2][blockNo];
+	private int[][] pattern5 = new int[2][blockNo];
 	private Player player;
+	private Background background;
 	Random rand = new Random();
 	
 	public Map(GameLoop game)
@@ -27,6 +30,7 @@ public class Map
 		this.game = game;
 		width = game.getWidth();
 		height = game.getHeight();
+		background = new Background(width, height); 
 		player = new Player(120, height-71, 50, 50, width, height);
 		player.setOffset(-scroll);
 		game.getWindow().getFrame().addKeyListener(player);
@@ -53,16 +57,18 @@ public class Map
 	
 	public void render(Graphics draw)
 	{
+		background.render(draw, scroll);
+		
 		int bCount;
-		int xEnd = bWidth * 4;
+		int xEnd = bWidth * blockNo;
 	
 		for(int patID = 0; patID < tPats; patID++)
 		{
-			xEnd = bWidth * 4;
+			xEnd = bWidth * blockNo;
 			
-			if(xEnd * 0 + scroll + loop <= -400)
+			if(scroll + loop <= -blockNo*bWidth)//-400
 			{
-				 loop+= 400;
+				 loop+= blockNo*bWidth;//400
 				 generateMap();
 			}
 			
@@ -70,7 +76,7 @@ public class Map
 			
 			if(genMap[patID] == 1)
 			{
-				for(bCount = 0; bCount < 4; bCount++)
+				for(bCount = 0; bCount < blockNo; bCount++)
 				{
 					block.setX(pattern1[0][bCount] + xEnd);
 					block.setY(pattern1[1][bCount]);
@@ -80,7 +86,7 @@ public class Map
 			}
 			else if(genMap[patID] == 2)
 			{
-				for(bCount = 0; bCount < 4; bCount++)
+				for(bCount = 0; bCount < blockNo; bCount++)
 				{
 					block.setX(pattern2[0][bCount] + xEnd);
 					block.setY(pattern2[1][bCount]);
@@ -90,7 +96,7 @@ public class Map
 			}
 			else if(genMap[patID] == 3)
 			{
-				for(bCount = 0; bCount < 4; bCount++)
+				for(bCount = 0; bCount < blockNo; bCount++)
 				{
 					block.setX(pattern3[0][bCount] + xEnd);
 					block.setY(pattern3[1][bCount]);
@@ -100,11 +106,21 @@ public class Map
 			}
 			else if(genMap[patID] == 4)
 			{
-				for(bCount = 0; bCount < 4; bCount++)
+				for(bCount = 0; bCount < blockNo; bCount++)
 				{
 					block.setX(pattern4[0][bCount] + xEnd);
 					block.setY(pattern4[1][bCount]);
 					player.collision(pattern4[0][bCount] + xEnd, pattern4[1][bCount]);
+					block.render(draw);
+				}
+			}
+			else if(genMap[patID] == 5)
+			{
+				for(bCount = 0; bCount < blockNo; bCount++)
+				{
+					block.setX(pattern5[0][bCount] + xEnd);
+					block.setY(pattern5[1][bCount]);
+					player.collision(pattern5[0][bCount] + xEnd, pattern5[1][bCount]);
 					block.render(draw);
 				}
 			}
@@ -118,6 +134,7 @@ public class Map
 		genMap[1] = 2;
 		genMap[2] = 3;
 		genMap[3] = 4;
+		genMap[4] = 5;
 		
 		//patterns 1
 		pattern1[0][0] = 0;
@@ -131,33 +148,43 @@ public class Map
 		
 		//pattern 2
 		pattern2[0][0] = 0;
-		pattern2[1][0] = height - 40;
+		pattern2[1][0] = height - 90;
 		pattern2[0][1] = bWidth;
-		pattern2[1][1] = height - 80;
+		pattern2[1][1] = height - 50;
 		pattern2[0][2] = bWidth * 2;
-		pattern2[1][2] = height + 150;
+		pattern2[1][2] = height - 550;
 		pattern2[0][3] = bWidth * 3;
-		pattern2[1][3] = height - 20;
+		pattern2[1][3] = height - 140;
 		
 		//pattern 3
 		pattern3[0][0] = 0;
-		pattern3[1][0] = height - 40;
+		pattern3[1][0] = height - 70;
 		pattern3[0][1] = bWidth;
-		pattern3[1][1] = height - 110;
+		pattern3[1][1] = height - 130;
 		pattern3[0][2] = bWidth * 2;
-		pattern3[1][2] = height - 200;
+		pattern3[1][2] = height - 210;
 		pattern3[0][3] = bWidth * 3;
-		pattern3[1][3] = height + 50;
+		pattern3[1][3] = height - 550;
 		
 		//pattern 4
 		pattern4[0][0] = 0;
-		pattern4[1][0] = height - 120;
+		pattern4[1][0] = height - 80;
 		pattern4[0][1] = bWidth;
-		pattern4[1][1] = height - 50;
+		pattern4[1][1] = height - 30;
 		pattern4[0][2] = bWidth * 2;
-		pattern4[1][2] = height - 100;
+		pattern4[1][2] = height - 550;
 		pattern4[0][3] = bWidth * 3;
-		pattern4[1][3] = height + 50;
+		pattern4[1][3] = height - 250;
+		
+		//pattern 5
+		pattern5[0][0] = 0;
+		pattern5[1][0] = height - 180;
+		pattern5[0][1] = bWidth;
+		pattern5[1][1] = height - 50;
+		pattern5[0][2] = bWidth * 2;
+		pattern5[1][2] = height - 550;
+		pattern5[0][3] = bWidth * 3;
+		pattern5[1][3] = height - 210;
 	}
 
 	public int getbWidth() {

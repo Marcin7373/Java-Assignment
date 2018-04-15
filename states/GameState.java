@@ -5,11 +5,11 @@ import java.awt.Graphics;
 import entities.Player;
 import game_engine.GameLoop;
 import game_engine.Map;
-import game_engine.SpriteCrop;
+import gfx.SpriteCrop;
 
 public class GameState extends State
 {
-	private static float scroll = 3, speedUp = 1.01f;//scroll = 3
+	private float scroll = 3, speedUp = 1.01f;//scroll = 3
 	private Map map;
 	
 	public GameState(GameLoop game)
@@ -29,13 +29,30 @@ public class GameState extends State
 			speedUp -= 0.000005;
 		}
 
-		//System.out.println(scroll+" "+speedUp);
-		scroll *= speedUp;
+		System.out.println(scroll);
+
+		if(scroll <= 11500)
+		{
+			scroll *= speedUp;
+		}
+		else 
+		{
+			scroll += 15.4;//at 11500 scroll the increment is 15.4 roughly
+		}
+		
 		map.update(scroll);
 	}
 	
 	public void render(Graphics draw)
 	{
 		map.render(draw);
+	}
+	@Override
+	public Map getMap() {
+		return map;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
 	}
 }

@@ -9,16 +9,19 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import game_engine.GameLoop;
+import gfx.SpriteCrop;
 
 public class MenuState extends State implements KeyListener
 {
 	private float distance, highScore;
 	private boolean start = false;
+	private int width, height;
 	
 	public MenuState(GameLoop game)
 	{
 		super(game);
-			
+		this.width = game.getWidth();
+		this.height = game.getHeight();
 	}
 	
 	@Override
@@ -35,14 +38,25 @@ public class MenuState extends State implements KeyListener
 	@Override
 	public void render(Graphics draw) 
 	{
-		Graphics2D draw2 = (Graphics2D)draw;
-		draw2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
-        draw2.setFont(new Font("Dialog", Font.BOLD, 70));
-        //draw.setColor(Color.GREEN);
-        draw2.drawString("Distance: "+distance+"   Highscore: "+highScore, 70, 320); 
-        //dialog, helvetica
-      //--- Get an array of font names (smaller than the number of fonts)
-        //String[] fontNames = ge.getAvailableFontFamilyNames();
+		draw.setColor(new Color(201, 231, 236));
+		draw.fillRect(0, 0, width, height);
+		draw.drawImage(SpriteCrop.background[0], 0, 221, width, 51, null);
+	    draw.drawImage(SpriteCrop.background[1], 0, 264, width, 80, null);
+	    draw.drawImage(SpriteCrop.background[2], 0, 14, width, 446, null);
+	    draw.drawImage(SpriteCrop.background[3], 0, 90, width, 318, null);
+	    draw.drawImage(SpriteCrop.background[4], 0, 386, width, 137, null);
+       
+		((Graphics2D) draw).setRenderingHint(RenderingHints.KEY_ANTIALIASING,RenderingHints.VALUE_ANTIALIAS_ON);
+        draw.setFont(new Font("Dialog", Font.BOLD, 50));
+        draw.setColor(Color.BLACK);
+        draw.drawRoundRect(351, 51, 500, 130, 30, 30);
+        
+        draw.setColor(new Color(255, 249, 243));
+    	draw.fillRoundRect(350, 50, 500, 130, 30, 30);
+    	draw.setColor(new Color(25, 52, 56));
+        draw.drawString("\"Enter\" to go again", 372, 128); 
+        draw.drawString("Distance:   "+distance, 390, 280);
+        draw.drawString("Highscore: "+highScore, 390, 360);
 	}	
 
 	@Override

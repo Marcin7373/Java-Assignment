@@ -133,7 +133,7 @@ public class Player extends Entity implements KeyListener
 			yMove += 13;//sliding of edge gravity
 		}
 		//System.out.println("vel: "+velocityY+" Jump:"+jumpF+" Peak:"+peakF+" Can:"+canMoveYDown+" Ground:"+groundF);
-		System.out.println(distance);
+		//System.out.println(distance);
 		if(down == true) 
 		{
 			yMove = speedY+5;

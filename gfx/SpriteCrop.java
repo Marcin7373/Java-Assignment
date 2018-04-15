@@ -17,7 +17,7 @@ public class SpriteCrop     /**  ADD TRY CATCHES FOR NO IMAGE**/
 	
 	public static void init()
 	{	
-		backCrop = loadImage("/back_crop.png");
+		backCrop = loadImage("/back_crop2.png");
 		entityCrop = loadImage("/entity_crop.png");
 		block = entityCrop.getSubimage(0, 340, 200, 20);
 		playerA[0] = entityCrop.getSubimage(0, 0, width, height);
@@ -26,11 +26,11 @@ public class SpriteCrop     /**  ADD TRY CATCHES FOR NO IMAGE**/
 		playerFall[1] = entityCrop.getSubimage(100, 100, width, height);
 		playerJump[0] = entityCrop.getSubimage(0, 203, width, height+15);
 		playerJump[1] = entityCrop.getSubimage(100, 203, width, height+15);
-		/*background[0] = backCrop.getSubimage(0, 0+, 2400, );
-		background[1] = backCrop.getSubimage(0, , 2400, );
-		background[2] = backCrop.getSubimage(0, , 2400, );
-		background[3] = backCrop.getSubimage(0, , 2400, );
-		background[4] = backCrop.getSubimage(0, , 2400, );*/
+		background[0] = backCrop.getSubimage(0, 2004, 2400, 102);
+		background[1] = backCrop.getSubimage(0, 1840, 2400, 153);
+		background[2] = backCrop.getSubimage(0, 948, 2400, 893);
+		background[3] = backCrop.getSubimage(0, 313, 2400, 636);
+		background[4] = backCrop.getSubimage(0, 40, 2400, 274);
 	}
 	
 	public static BufferedImage loadImage(String path)

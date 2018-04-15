@@ -22,7 +22,7 @@ public class Block extends Entity
 	@Override
 	public void render(Graphics draw) 
 	{
-		draw.drawImage(SpriteCrop.block, (int)x, (int)y, width, height, null);	
+		draw.drawImage(SpriteCrop.block, (int)x, (int)y-3, width, height+4, null);	
 	}
 
 }

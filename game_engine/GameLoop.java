@@ -60,17 +60,17 @@ public class GameLoop
 		
 		if(bufferStrat == null)
 		{
-			getWindow().getCanvas().createBufferStrategy(3); //create new one if one doesn't exist     
+			getWindow().getCanvas().createBufferStrategy(2); //create new one if one doesn't exist     
 			return;
 		}
 		
-		draw = bufferStrat.getDrawGraphics();
+		draw = bufferStrat.getDrawGraphics();//
 		draw.clearRect(0, 0, width, height); //clears the screen for next frame
 		
 		State.getState().render(draw);	     //renders whichever state is set
 		
-		bufferStrat.show();                  //shows everything to this point
-		draw.dispose();                      //for next frame
+		bufferStrat.show();                  //shows everything in the buffer
+		draw.dispose();                      //clear for next frame
 		/***REF Code taken from Codenmore***/
 	}
 	

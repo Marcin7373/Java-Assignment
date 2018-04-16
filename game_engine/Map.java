@@ -10,8 +10,8 @@ import gfx.Background;
 public class Map 
 {
 	private int width, height;
-	private final int tPats = 5, blockNo = 4;
-	private final int bWidth = 100, bHeight = 10; //block width
+	private final int tPats = 5, blockNo = 4;//no. of patterns of block, no. of blocks in each pattern
+	private final int bWidth = 100, bHeight = 10; //block width, height
 	private int scroll, loop = 0;
 	private Block block;
 	private int[] genMap = new int[tPats];
@@ -29,7 +29,7 @@ public class Map
 		width = game.getWidth();
 		height = game.getHeight();
 		background = new Background(width, height); 
-		player = new Player(120, height-71, 50, 50, width, height);
+		player = new Player(120, height-71, 50, 50, width, height);//places player on platform
 		player.setOffset(-scroll);
 		game.getWindow().getFrame().addKeyListener(player);
 		block = new Block(0,0, bWidth, bHeight);

@@ -7,7 +7,7 @@ public abstract class Entity
 {
 	protected float x, y;
 	protected int width, height;
-	protected Rectangle hitBox;
+	protected Rectangle hitBox; //for collision detection
 	
 	public Entity(float x, float y, int width, int height)
 	{
@@ -19,6 +19,11 @@ public abstract class Entity
 		hitBox = new Rectangle((int)x, (int)y, width, height);
 	}
 	
+    public abstract void update();    //entities need render and update
+	
+	public abstract void render(Graphics draw);
+	
+	/***Getters and Setters***/
 	public float getX() {
 		return x;
 	}
@@ -50,9 +55,4 @@ public abstract class Entity
 	public void setHeight(int height) {
 		this.height = height;
 	}
-
-	public abstract void update();
-	
-	public abstract void render(Graphics draw);
-	
 }

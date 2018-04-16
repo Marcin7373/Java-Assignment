@@ -3,63 +3,61 @@ package gfx;
 import java.awt.Graphics;
 
 public class PlayerAnimation 
-{
-	private int width, height, count = 0, i = 0, j = 0;
+{   
+	private int pWidth, pHeight, cycle = 0, frames = 0;
 	private boolean toggleG, lockJ, lockL;//toggle ground, lock on jump, lock on land
 	
 	public PlayerAnimation(int width, int height)
 	{
-		this.width = width;
-		this.height = height;
+		this.pWidth = width;    //player width and height
+		this.pHeight = height;
 	}
 	
 	public void render(Graphics draw, float x, float y, boolean groundF)
 	{
-		count++;
+		cycle++;                     //game cycles
 		
-		if(groundF == true && toggleG == false) lockL = true;
-		if(groundF == false && toggleG == true) lockJ = true;
+		if(toggleG == true && groundF == false) lockJ = true;//if ground was true now false = jumping
+		if(toggleG == false && groundF == true) lockL = true;//if ground was false now true = landing 
 		
-		if(groundF == toggleG && lockL == false && lockJ == false)
+		if(groundF == toggleG && lockL == false && lockJ == false)//if not jumping or landing
 		{
-			if(count%5 == 0)
+			if(cycle%6 == 0)               //switch frames every 6 game cycles
 			{
-				count = 0;
-				j++;
-				if(j > 1) j = 0;
+				cycle = 0;
+				frames++;                  //next frame in array
 				
+				if(frames > 1) frames = 0; //go back to start of array cycle = 1,0,1,0...
 			}
-			draw.drawImage(SpriteCrop.playerA[j], (int)x, (int)y, width, height, null);
+			draw.drawImage(SpriteCrop.player[frames], (int)x, (int)y, pWidth, pHeight, null);
 		}
 		else if(lockL == true)
 		{
-			lockL = true;
-			if(count%6 == 0)
+			if(cycle%4 == 0)         //switch frames every 4 game cycles
 			{
-				i++;
-				if(i > 1)
+				frames++;
+				if(frames > 1)       //array cycle
 				{
-					i = 0;
-					lockL = false;
+					frames = 0;     
+					lockL = false;   //unlock all other animations = landing over
 				}
 			}
-			draw.drawImage(SpriteCrop.playerFall[i], (int)x, (int)y, width, height, null);
+			draw.drawImage(SpriteCrop.playerLand[frames], (int)x, (int)y, pWidth, pHeight, null);
 		}
 		else if(lockJ == true)
 		{
-			lockJ = true;
-			if(count%6 == 0)
+			if(cycle%8 == 0)     //switch frames every 8 game cycles
 			{
-				i++;
-				if(i > 1)
+				frames++;
+				if(frames > 1)
 				{
-					i = 0;
-					lockJ = false;
+					frames = 0;
+					lockJ = false;//unlock all other animations = jump over
 				}
 			}
-			draw.drawImage(SpriteCrop.playerJump[i], (int)x, (int)y, width, height, null);
+			draw.drawImage(SpriteCrop.playerJump[frames], (int)x, (int)y, pWidth, pHeight, null);
 		}
 		
-		toggleG = groundF;
+		toggleG = groundF; //toggle for next cycle
 	}
 }

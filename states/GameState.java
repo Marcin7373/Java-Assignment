@@ -45,6 +45,7 @@ public class GameState extends State
 		map.render(draw);
 	}
 	
+	/***Getters and Setters***/
 	@Override
 	public Map getMap() {
 		return map;

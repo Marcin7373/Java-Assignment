@@ -3,7 +3,6 @@ package game_engine;
 import java.awt.Graphics;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 import gfx.SpriteCrop;
 import states.GameState;
@@ -14,11 +13,10 @@ public class GameLoop
 {
 	private Window window;
 	private static final int width = 1200, height = 500;//window sizes
-	private float distance;            //
-	//
-	private BufferStrategy bufferStrat;
+	private float distance;                             //measuring score
+	
+	private BufferStrategy bufferStrat; 
 	private Graphics draw;
-	public BufferedImage test;
 	
 	//States
 	private State gameState;
@@ -26,8 +24,8 @@ public class GameLoop
 	
 	public GameLoop() //constructor
 	{	
-		setWindow(new Window(width, height));
-		SpriteCrop.init();
+		window = new Window(width, height);
+		SpriteCrop.init();                    //loads all images and crops them
 		
 		gameState = new GameState(this);      //game = were all playing will happen
 		menuState = new MenuState(this);      //menu = after death menu restarts game = death screen
@@ -37,7 +35,7 @@ public class GameLoop
     //Updates variables for positions of objects and other
 	private void update()
 	{
-		if(gameState.getMap().getPlayer().isDeathF()) //if death flag set by player 
+		if(gameState.getMap().getPlayer().isDeathF())               //if death flag set by player 
 		{
 			distance = gameState.getMap().getPlayer().getDistance();//get distance traveled 
 			State.setState(menuState);                              //back to menu to show score
@@ -52,19 +50,20 @@ public class GameLoop
 		
 		State.getState().update();                                  //update whichever state is set
 	}
+	
 	//Renders or displays things in coordinates updated by update
 	private void render()
 	{
-		/***REF Code taken from Codenmore***/
+		/***REF Code taken from https://github.com/CodeNMore/New-Beginner-Java-Game-Programming-Src***/
 		bufferStrat = getWindow().getCanvas().getBufferStrategy();//image buffer
 		
 		if(bufferStrat == null)
 		{
-			getWindow().getCanvas().createBufferStrategy(2); //create new one if one doesn't exist     
+			getWindow().getCanvas().createBufferStrategy(2);      //create new one if one doesn't exist     
 			return;
 		}
 		
-		draw = bufferStrat.getDrawGraphics();//
+		draw = bufferStrat.getDrawGraphics();
 		draw.clearRect(0, 0, width, height); //clears the screen for next frame
 		
 		State.getState().render(draw);	     //renders whichever state is set
@@ -75,36 +74,36 @@ public class GameLoop
 	}
 	
 	//required by Runnable
-	public void run()                 //Main game loop started by main 
+	public void run()                           //Main game loop started by main 
 	{	/*****REF Code taken from https://github.com/CodeNMore/New-Beginner-Java-Game-Programming-Src******/						 
 		int fps = 60;
 		double timePerFrame = 1000000000 / fps; //1 billion nanosecs in sec
-		double delta = 0;              //time until next call
+		double delta = 0;                       //time until next call
 		long now;        
 		long lastTime = System.nanoTime();
-		long timer = 0;                 //time until 1 sec     |for fps
-		long frames = 0;                //counts up to fps set |counter
+		long timer = 0;                         //time until 1 sec     |for fps
+		long frames = 0;                        //counts up to fps set |counter
 		
 		while(true)  //runs until game is canceled out of
 		{
 			now = System.nanoTime();
 			delta += (now - lastTime) / timePerFrame;
-			timer += now - lastTime;         //for fps counter
+			timer += now - lastTime;            //for fps counter
 			lastTime = now;
 			
 			if(delta >= 1)
 			{
 				update();
 				render();
-				frames++;     //for fps counter
+				frames++;             //for fps counter
 				delta--;
 			}
-			
-			if(timer >= 1000000000)   //fps counter
+			   /***FPS counter***/
+			if(timer >= 1000000000)   //number of nanoseconds in a sec   
 			{
-				System.out.println("FPS: "+frames);
-				frames = 0;
-				timer = 0;
+				System.out.println("FPS: " + frames);
+				frames = 0;           //reset cycle
+				timer = 0;            //reset timer
 			}
 		}/***REF code taken from Codenmore***/
 	}

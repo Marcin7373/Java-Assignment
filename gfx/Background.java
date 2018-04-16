@@ -6,8 +6,8 @@ import java.awt.Graphics;
 public class Background
 {
 	private int width, height;
-	private int loop1 = 0, loop2 = 0, loop3 = 0, loop4 = 0;
-	private float rate1 = 0.2f, rate2 = 0.9f, rate3 = 0.5f, rate4 = 1.2f;
+	private int loop1 = 0, loop2 = 0, loop3 = 0, loop4 = 0;//allows for looping of an image = total offset of screens passed
+	private float rate1 = 0.2f, rate2 = 0.9f, rate3 = 0.5f, rate4 = 1.2f;//rate compared to normal scroll rate of level
 	
 	public Background(int width, int height)
 	{
@@ -52,14 +52,6 @@ public class Background
 	    
 	    draw.drawImage(SpriteCrop.background[4], (int) (scroll * rate4)+loop4, 386, width, 137, null);
 	    draw.drawImage(SpriteCrop.background[4], (int) (scroll * rate4)+loop4+width, 386, width, 137, null);
-	    
-	    //draw.drawImage(SpriteCrop.one, bX+scroll+loop, bY, width, height, null);
-		//draw.drawImage(SpriteCrop.one, bX+scroll+loop+width, bY, width, height, null);
-		//scroll = (int) (scroll * 1.1);
-		//draw.drawImage(SpriteCrop.two, bX+scroll+loop2, bY, width, height, null);
-		//draw.drawImage(SpriteCrop.two, bX+scroll+loop2+width, bY, width, height, null);
-		//draw.drawImage(SpriteCrop.three, bX, bY, width, height, null);
-		//System.out.println(bX + " " + loop);
 	}
 }
 

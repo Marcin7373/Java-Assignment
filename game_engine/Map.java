@@ -10,19 +10,19 @@ import gfx.Background;
 public class Map 
 {
 	private int width, height;
-	private final int tPats = 5, blockNo = 4;//no. of patterns of block, no. of blocks in each pattern
-	private final int bWidth = 100, bHeight = 10; //block width, height
-	private int scroll, loop = 0;
+	private final int totalPats = 5, blockNo = 4;//no. of patterns of block, no. of blocks in each pattern
+	private final int bWidth = 100, bHeight = 10;   //block width, height
+	private int scroll, loop = 0;                   //loop = adds to x value to make blocks loop
 	private Block block;
-	private int[] genMap = new int[tPats];
-	private int[][] pattern1 = new int[2][blockNo];
+	private int[] genMap = new int[totalPats];          //stores order the patterns are in
+	private int[][] pattern1 = new int[2][blockNo];     //stores block coordinates
 	private int[][] pattern2 = new int[2][blockNo];
 	private int[][] pattern3 = new int[2][blockNo];
 	private int[][] pattern4 = new int[2][blockNo];
 	private int[][] pattern5 = new int[2][blockNo];
 	private Player player;
 	private Background background;
-	Random rand = new Random();
+	Random rand = new Random();                     //for generating pattern orders
 	
 	public Map(GameLoop game)
 	{
@@ -30,59 +30,60 @@ public class Map
 		height = game.getHeight();
 		background = new Background(width, height); 
 		player = new Player(120, height-71, 50, 50, width, height);//places player on platform
-		player.setOffset(-scroll);
-		game.getWindow().getFrame().addKeyListener(player);
+		player.setOffset(-scroll);                         //player needs to scroll with level
+		game.getWindow().getFrame().addKeyListener(player);//player keyboard input
 		block = new Block(0,0, bWidth, bHeight);
 		
-		initPatterns();
-	}
+		initPatterns();           //sets up initial map before generation 
+	}                             //then sets up all pattern coordinates
 	
 	public void generateMap()
 	{
-		for(int i = 0; i < tPats-1; i++)
+		for(int i = 0; i < totalPats-1; i++)       //adds a new random pattern no.
 		{
 			genMap[i] = genMap[i+1];
 		}
-		genMap[tPats-1] = rand.nextInt(tPats)+1;
+		genMap[totalPats-1] = rand.nextInt(totalPats)+1;//add random pattern to the end
 	}
 	
 	public void update(float scroll)
 	{
-		this.scroll = (int)-scroll;
+		this.scroll = (int)-scroll;   //"-" so scroll can be just added without worry for signs
+		background.update(this.scroll);
 		player.setScroll(this.scroll);
 		player.update();
 	}
 	
 	public void render(Graphics draw)
 	{
-		background.render(draw, scroll);
+		background.render(draw, scroll);    //background render before everything else
 		
-		int bCount;
-		int xEnd = bWidth * blockNo;
-	
-		for(int patID = 0; patID < tPats; patID++)
+		int bCount;                         //counts through blocks in each pattern
+		int xEnd = bWidth * blockNo;        //allows for rendering blocks back to back
+		
+		//loops through the randomly generated patterns
+		for(int patID = 0; patID < totalPats; patID++)  
 		{
-			xEnd = bWidth * blockNo;
-			
-			if(scroll + loop <= -blockNo*bWidth)//-400
+			if(scroll + loop <= -blockNo*bWidth)//if pattern off screen
 			{
-				 loop+= blockNo*bWidth;//400
-				 generateMap();
+				 loop+= blockNo*bWidth;         //next pattern coordinate
+				 generateMap();                 //generate next pattern randomly
 			}
 			
-			xEnd = xEnd * patID + scroll + loop;
+			xEnd = bWidth * blockNo;            //next block location
+			xEnd = xEnd * patID + scroll + loop;//next pattern coordinate 
 			
-			if(genMap[patID] == 1)
+			if(genMap[patID] == 1)              //looking through patterns generated
 			{
-				for(bCount = 0; bCount < blockNo; bCount++)
+				for(bCount = 0; bCount < blockNo; bCount++)  //rendering generated patterns
 				{
-					block.setX(pattern1[0][bCount] + xEnd);
-					block.setY(pattern1[1][bCount]);
-					player.collision(pattern1[0][bCount] + xEnd, pattern1[1][bCount]);
+					block.setX(pattern1[0][bCount] + xEnd);  //one block is used
+					block.setY(pattern1[1][bCount]);         //so its location is reset every time
+					player.collision(pattern1[0][bCount] + xEnd, pattern1[1][bCount]);//check for collisions with player
 					block.render(draw);
 				}
 			}
-			else if(genMap[patID] == 2)
+			else if(genMap[patID] == 2)         //repeat for all other possible patterns
 			{
 				for(bCount = 0; bCount < blockNo; bCount++)
 				{
@@ -121,13 +122,13 @@ public class Map
 					player.collision(pattern5[0][bCount] + xEnd, pattern5[1][bCount]);
 					block.render(draw);
 				}
-			}
+			}//add new pattern here
 		}
 		player.render(draw);
 	}
 	
 	public void initPatterns()
-	{
+	{   //initial patterns, those will always be the first 5 patterns
 		genMap[0] = 1;
 		genMap[1] = 2;
 		genMap[2] = 3;
@@ -185,6 +186,7 @@ public class Map
 		pattern5[1][3] = height - 210;
 	}
 
+	/***Getters and Setters***/
 	public int getbWidth() {
 		return bWidth;
 	}

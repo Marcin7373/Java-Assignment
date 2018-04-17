@@ -8,16 +8,14 @@ import game_engine.Map;
 public abstract class State 
 {
 	private static State curState = null;
-	protected GameLoop game;
-	//private Map map;
+	protected GameLoop game;             //all having game object useful
 	
 	public State(GameLoop game)
 	{
 		this.game = game;
-		//map = new Map(game);
 	}
 	
-	public static void setState(State state)
+	public static void setState(State state)//changing state
 	{
 		curState = state;
 	}
@@ -27,15 +25,16 @@ public abstract class State
 		return curState;
 	}
 	
-	public abstract void update();
+	public abstract void update(); //all need a render and update
 	
 	public abstract void render(Graphics draw);
 
-	public Map getMap() { //needed to make one for gamestate
+	/***Getters and Setters***/
+	public Map getMap() { //needed to make one for game state
 		return null;
 	}
-
-	public boolean isStart() {
+      //needed for menu state
+	public boolean isStart() {   
 		return false;
 	}
 

@@ -16,8 +16,8 @@ public class SpriteCrop
 	
 	public static void init()
 	{	                     //path to img included actual path = "/img/example.png"
-		backCrop = loadImage("/back_crop.png");
-		entityCrop = loadImage("/entity_crop.png");
+		backCrop = loadImage("/img/back_crop.png");
+		entityCrop = loadImage("/img/entity_crop.png");
 		/***Cropping all images to be used***/            
 		block = entityCrop.getSubimage(0, 340, 200, 20);             //numbers for all gotten            
 		player[0] = entityCrop.getSubimage(0, 0, width, height);     //while creating the images
